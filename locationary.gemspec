@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Locationary::VERSION
   spec.authors       = ["Oren Mazor"]
   spec.email         = ["oren.mazor@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = "Ruby Gem to normalize and correct location information"
+  spec.summary       = "Ruby Gem to normalize and correct location information"
   spec.homepage      = ""
   spec.license       = "MIT"
 
