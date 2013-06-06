@@ -6,10 +6,11 @@ require "levenshtein"
 module Locationary
 
   def Locationary.find(query, options = {:strict => true})
+    query.upcase
     if options[:strict]
-      return Locationary.data[query[:postalcode].downcase]
+      return Locationary.data[query]
     else
-      return Locationary.fuzzy(query[:postalcode].downcase)
+      return Locationary.fuzzy(query)
     end
   end
 
@@ -24,7 +25,7 @@ module Locationary
       end
     end
 
-    [Locationary.data[best_match], {:levenstein => best_score}]
+    Locationary.data[best_match]
   end
 
   def Locationary.data
@@ -49,7 +50,7 @@ module Locationary
   PROPERTIES.each do |location_prop|
     class_eval <<-RUBY, __FILE__, __LINE__ +1
       def Locationary.find_by_#{location_prop[0].to_s}(val, options)
-        Locationary.find({"#{location_prop[0]}".to_sym => val}, options)
+        Locationary.find(val, options)
       end
     RUBY
   end
