@@ -11,7 +11,8 @@ namespace :geonames do
     db_path = "#{Dir.pwd}/db/geonames.bin"
     zipdatafile = "#{Dir.pwd}/tmp/allCountries.zip"
     rawdata = "#{Dir.pwd}/tmp/allCountries.txt"
-    data_headers = ["Country Code","Postal Code","Place Name","Name 1","Code 1","Name 2","Code 2","Name 3","Code 3","Latitude","Longitude","Accuracy"]
+    data_headers = ["Country Code","Postal Code","Place Name","Province","Province Shortcode","City","City Shortcode","Region","Region Shortcode","Latitude","Longitude","Accuracy"]
+    canada_data = "#{Dir.pwd}/db/raw/canada.csv"
 
     if File.exist?(db_path)
       File.delete(db_path)
@@ -38,10 +39,20 @@ namespace :geonames do
           data.gsub!('"','')
           data.gsub!('\'','')
           CSV.parse(data, {:col_sep => "\t", :headers=>data_headers, :force_quotes => true}).each do |row|
-            addresses[row["Postal Code"].downcase] = row.to_hash
+            #Canada is special
+            if not ["CA"].include?(row["Country Code"])
+              addresses[row["Postal Code"].upcase] = row.to_hash
+            end
           end
         end
       end
+
+      #canada is special
+      canada_data = File.read(canada_data)
+      CSV.parse(canada_data, :headers=>["Postal Code","Latitude","Longitude","City","Province Shortcode","Province"]).each do |row|
+        addresses[row["Postal Code"].upcase] = row.to_hash
+      end
+
     end
     puts "parsed data into address structure in #{parse_time.real} seconds"
 
