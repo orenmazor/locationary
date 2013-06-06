@@ -5,8 +5,26 @@ require "levenshtein"
 
 module Locationary
 
-  def Locationary.find(address = {}, options = {:strict => true})
-    return Locationary.data[address[:postalcode]] if options[:strict]
+  def Locationary.find(query, options = {:strict => true})
+    if options[:strict]
+      return Locationary.data[query[:postalcode].downcase]
+    else
+      return Locationary.fuzzy(query[:postalcode].downcase)
+    end
+  end
+
+  def Locationary.fuzzy(query)
+    best_score = 9999999999
+    best_match = nil
+    Locationary.data.keys.each do |key|
+      new_score = Levenshtein.distance(key,query)
+      if new_score < best_score
+        best_score = new_score
+        best_match = key
+      end
+    end
+
+    [Locationary.data[best_match], {:levenstein => best_score}]
   end
 
   def Locationary.data

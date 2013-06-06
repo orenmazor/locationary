@@ -25,4 +25,16 @@ class LookupTests < MiniTest::Unit::TestCase
   def test_postalcode_convenience_method
     assert_equal @kanata, Locationary.find_by_postalcode("K2K", {:strict => true})
   end
+
+  def test_postalcode_fuzzy_search
+    assert_equal @kanata, Locationary.find_by_postalcode("K2KX", {:strict => false})
+  end
+
+  def test_fuzzy_search_ignores_case
+    assert_equal @kanata, Locationary.find_by_postalcode("k2k", {:strict => false})
+  end
+
+  def test_fuzzy_search_finds_full_postal_code
+    assert_equal @kanata, Locationary.find_by_postalcode("k2k2k1", {:strict => false})
+  end
 end

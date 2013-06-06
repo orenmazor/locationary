@@ -38,7 +38,7 @@ namespace :geonames do
           data.gsub!('"','')
           data.gsub!('\'','')
           CSV.parse(data, {:col_sep => "\t", :headers=>data_headers, :force_quotes => true}).each do |row|
-            addresses[row["Postal Code"]] = row.to_hash
+            addresses[row["Postal Code"].downcase] = row.to_hash
           end
         end
       end
