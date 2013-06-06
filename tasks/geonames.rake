@@ -12,7 +12,7 @@ namespace :geonames do
     zipdatafile = "#{Dir.pwd}/tmp/allCountries.zip"
     rawdata = "#{Dir.pwd}/tmp/allCountries.txt"
     data_headers = ["Country Code","Postal Code","Place Name","Province","Province Shortcode","City","City Shortcode","Region","Region Shortcode","Latitude","Longitude","Accuracy"]
-    canada_data = "#{Dir.pwd}/db/raw/canada.csv"
+    canada_data_path = "#{Dir.pwd}/db/raw/canada.csv"
 
     if File.exist?(db_path)
       File.delete(db_path)
@@ -48,7 +48,7 @@ namespace :geonames do
       end
 
       #canada is special
-      canada_data = File.read(canada_data)
+      canada_data = File.read(canada_data_path)
       CSV.parse(canada_data, :headers=>["Postal Code","Latitude","Longitude","City","Province Shortcode","Province"]).each do |row|
         addresses[row["Postal Code"].upcase] = row.to_hash
       end
