@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Locationary::VERSION
   spec.authors       = ["Oren Mazor"]
   spec.email         = ["oren.mazor@gmail.com"]
-  spec.description   = "Ruby Gem to normalize and correct location information"
-  spec.summary       = "Ruby Gem to normalize and correct location information"
+  spec.description   = "Ruby Gem to normalize and auto-correct location information"
+  spec.summary       = "Ruby Gem to normalize and auto-correct location information"
   spec.homepage      = ""
   spec.license       = "MIT"
 
@@ -21,4 +21,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "msgpack"
+  spec.add_development_dependency "minitest"
+  spec.add_development_dependency "zip"
 end
