@@ -1,6 +1,6 @@
 require "locationary/version"
 require "msgpack"
-require "zlib"
+require "snappy"
 
 module Locationary
 
@@ -16,7 +16,7 @@ module Locationary
 
   def Locationary.load_data
     raw = File.read("#{Dir.pwd}/db/geonames.bin")
-    @data = MessagePack.unpack(Zlib::Inflate.inflate(raw))
+    @data = MessagePack.unpack(Snappy.inflate(raw))
   end
 
 end
