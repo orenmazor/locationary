@@ -11,7 +11,7 @@ class LocationaryTests < MiniTest::Unit::TestCase
   end
 
   def test_locationary_respondsto_find_by_methods
-    props = [:postal_code, :country_code, :state, :province, :community]
+    props = [:postalcode, :country_code, :state, :province, :community]
     props.each { |prop| assert Locationary.methods.include?("find_by_#{prop}".to_sym) }
   end
 end

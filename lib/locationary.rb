@@ -21,7 +21,7 @@ module Locationary
   end
 
   PROPERTIES = {
-    postal_code: "Postal Code",
+    postalcode: "Postal Code",
     country_code: "Country Code",
     state: "Name 1",
     province: "Name 2",
@@ -30,8 +30,8 @@ module Locationary
 
   PROPERTIES.each do |location_prop|
     class_eval <<-RUBY, __FILE__, __LINE__ +1
-      def Locationary.find_by_#{location_prop[0].to_s}(val)
-        Locationary.data
+      def Locationary.find_by_#{location_prop[0].to_s}(val, options)
+        Locationary.find({"#{location_prop[0]}".to_sym => val}, options)
       end
     RUBY
   end
