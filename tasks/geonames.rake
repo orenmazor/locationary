@@ -1,7 +1,8 @@
 require 'msgpack'
 require 'net/http'
 require 'csv'
-require 'zip'
+require 'zip/zip'
+require 'zlib'
 
 namespace :geonames do
   desc 'create database'
@@ -38,8 +39,7 @@ namespace :geonames do
     end
 
     File.open(db_path,"w") do |file|
-      file.write(addresses.to_msgpack)
+      file.write(Zlib::Deflate.deflate(addresses.to_msgpack))
     end
-
   end
 end
