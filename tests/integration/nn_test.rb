@@ -21,7 +21,7 @@ class NearestNeighbourLookupTests < MiniTest::Unit::TestCase
     Locationary.clear_nn_data
 
     actual = "K2P1J2"
-    results = Locationary.nearest_neighbour(45.42083333333334, -75.69)
+    results = Locationary.nearest_neighbour(45.4208, -75.69)
     assert_equal results[0]["Postal Code"], actual
   end
 end
