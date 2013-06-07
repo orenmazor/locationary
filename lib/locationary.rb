@@ -2,6 +2,7 @@ require "locationary/version"
 require "msgpack"
 require "snappy"
 require "levenshtein"
+require "xor"
 
 module Locationary
 
@@ -19,12 +20,17 @@ module Locationary
 
   def Locationary.fuzzy(query)
     best_score = 9999999999
+    best_hamming = 9999999999
     best_match = nil
     Locationary.data.keys.each do |key|
       new_score = Levenshtein.distance(key,query)
       if new_score < best_score
-        best_score = new_score
-        best_match = key
+        new_hamming = 0
+        key.dup.xor!(query).bytes.each { |b| new_hamming += b}
+        if new_hamming < best_hamming
+          best_score = new_score
+          best_match = key
+        end
       end
     end
 
