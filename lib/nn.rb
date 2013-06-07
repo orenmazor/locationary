@@ -25,18 +25,60 @@ module Locationary
     results
   end
 
+  def Locationary.persist_nn_structure
+    points = []
+    lookup = []
+    i = 0
+
+    Locationary.data.each do |location|
+      lat = location[1]['Latitude']
+      lon = location[1]['Longitude']
+      if !lat.nil? and !lon.nil?
+        points << [Float(location[1]['Latitude']), Float(location[1]['Longitude']), i]
+        lookup << location[0]
+        i += 1
+      end
+    end
+    kd = Kdtree.new(points)
+
+    File.open(Locationary.nn_data_location,"w") do |file|
+      kd.persist(file)
+    end
+
+    File.open(Locationary.nn_lookup_location, "w") do |file|
+      lookup.each { |l| file.write("#{l}\n") }
+    end
+  end
+
   private
 
   def Locationary.load_nn_lookup
     lookup = []
-    File.open("#{Dir.pwd}/db/lookup.txt") do |f|
+    Locationary.validate_nn_presence
+
+    File.open(Locationary.nn_lookup_location) do |f|
       f.each { |l| lookup << l.strip }
     end
     lookup
   end
 
   def Locationary.load_nn_data
-    kd = File.open("#{Dir.pwd}/db/kdtree.bin") { |f| Kdtree.new(f) }
+    Locationary.validate_nn_presence
+    kd = File.open(Locationary.nn_data_location) { |f| Kdtree.new(f) }
+  end
+
+  def Locationary.validate_nn_presence
+    if !File.exists?(Locationary.nn_lookup_location) or !File.exists?(Locationary.nn_data_location) then 
+      Locationary.persist_nn_structure
+    end
+  end
+
+  def Locationary.nn_data_location
+    "#{Dir.pwd}/db/kdtree.bin"
+  end
+
+  def Locationary.nn_lookup_location
+    "#{Dir.pwd}/db/lookup.txt"
   end
 
 end
