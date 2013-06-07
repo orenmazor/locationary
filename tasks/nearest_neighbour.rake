@@ -1,6 +1,5 @@
 require 'kdtree'
 require "./lib/locationary"
-require "./lib/nn"
 
 namespace :nearest_neighbour do
   desc 'persist nearest neighbour structure'
