@@ -7,11 +7,14 @@ module Locationary
 
   def Locationary.find(query, options = {:strict => true})
     query.upcase
-    if options[:strict]
-      return Locationary.data[query]
-    else
-      return Locationary.fuzzy(query)
+
+    result = Locationary.data[query]
+    #if the user asked for a fuzzy lookup and we didn't find an exact match above
+    if not options[:strict] and not result
+      result = Locationary.fuzzy(query)
     end
+
+    result
   end
 
   def Locationary.fuzzy(query)
