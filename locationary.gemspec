@@ -26,4 +26,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "snappy"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "levenshtein-ffi"
+  spec.add_development_dependency "kdtree"
 end
