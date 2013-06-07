@@ -19,4 +19,12 @@ class NearestNeighbourLookupTests < MiniTest::Unit::TestCase
     assert_equal results[1]["Postal Code"], actual[1]
     assert_equal results[2]["Postal Code"], actual[2]
   end
+
+  def test_persists_nn_data_if_empty
+    Locationary.clear_nn_data
+
+    actual = "K2P"
+    results = Locationary.nearest_neighbour(45.42083333333334, -75.69)
+    assert_equal results[0]["Postal Code"], actual
+  end
 end
