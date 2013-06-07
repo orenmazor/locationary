@@ -1,5 +1,4 @@
 require "./tests/test_helper"
-require "./lib/nn"
 
 class NearestNeighbourLookupTests < MiniTest::Unit::TestCase
   def test_finds_single_nearest_neighbour

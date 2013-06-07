@@ -1,5 +1,4 @@
 require "./tests/test_helper"
-require "./lib/nn"
 
 class NearestNeighbourTests < MiniTest::Unit::TestCase
 
