@@ -38,7 +38,7 @@ module Locationary
   private
 
   def Locationary.load_data
-    raw = File.read("#{Dir.pwd}/db/geonames.bin")
+    raw = File.read("#{Dir.pwd}/db/geonames_#{ENV['RACK_ENV']}.bin")
     @data = MessagePack.unpack(Snappy.inflate(raw))
   end
 
