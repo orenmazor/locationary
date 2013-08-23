@@ -9,7 +9,7 @@ module Locationary
 
   def Locationary.find(query, options = {:strict => true})
     query.upcase
-
+    
     result = Locationary.data[query]
     #if the user asked for a fuzzy lookup and we didn't find an exact match above
     if not options[:strict] and not result

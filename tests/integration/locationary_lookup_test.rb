@@ -3,11 +3,7 @@ require "./lib/locationary"
 
 class LookupTests < MiniTest::Unit::TestCase
   def setup
-    @kanata = {"Postal Code"=>"K2K2K1", "Latitude"=>"45.3261190000", "Longitude"=>"-75.9106530000", "City"=>"Kanata", "Province Shortcode"=>"ON", "Province"=>"Ontario"}
-  end
-
-  def test_locationary_finds_by_longitude_latitude
-    assert_equal @kanata, Locationary.find({:longitude => @kanata[:longitude], :latitude => @kanata[:latitude]})
+    @kanata = {"Postal Code"=>"K2K2K1", "Latitude"=>"45.3261190000", "Longitude"=>"-75.9106530000", "City"=>"Kanata", "Province"=>"Ontario", "Country" => "Canada"}
   end
 
   def test_strict_lookup_fails_quietly_on_wrong_data

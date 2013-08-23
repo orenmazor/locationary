@@ -8,24 +8,29 @@ require 'benchmark'
 namespace :geonames do
   desc 'create database'
   task :create do
-    db_path = "#{Dir.pwd}/db/geonames.bin"
+    target_environment = "#{ENV['RACK_ENV']}"
+    db_path = "#{Dir.pwd}/db/geonames_#{target_environment}.bin"
     zipdatafile = "#{Dir.pwd}/tmp/allCountries.zip"
     rawdata = "#{Dir.pwd}/tmp/allCountries.txt"
     data_headers = ["Country Code","Postal Code","Place Name","Province","Province Shortcode","City","City Shortcode","Region","Region Shortcode","Latitude","Longitude","Accuracy"]
     canada_data_path = "#{Dir.pwd}/db/raw/canada.csv"
+    result_headers = ["Postal Code", "Latitude", "Longitude", "City", "Province", "Country"]
 
     if File.exist?(db_path)
       File.delete(db_path)
     end
-    download_time = Benchmark.measure do
-      Net::HTTP.start("download.geonames.org") do |http|
-        resp = http.get("/export/zip/allCountries.zip")
-        open(zipdatafile, "wb") do |file|
-          file.write(resp.body)
+
+    begin
+      download_time = Benchmark.measure do
+        Net::HTTP.start("download.geonames.org") do |http|
+          resp = http.get("/export/zip/allCountries.zip")
+          open(zipdatafile, "wb") do |file|
+            file.write(resp.body)
+          end
         end
       end
-    end
-    puts "downloaded file in #{download_time.real} seconds"
+      puts "downloaded file in #{download_time.real} seconds"
+    end if target_environment == "production"
 
     addresses = {}
 
@@ -41,16 +46,16 @@ namespace :geonames do
           CSV.parse(data, {:col_sep => "\t", :headers=>data_headers, :force_quotes => true}).each do |row|
             #Canada is special
             if not ["CA"].include?(row["Country Code"])
-              addresses[row["Postal Code"].upcase] = row.to_hash
+              addresses[row["Postal Code"].upcase] = row.to_hash.select {|k,v| result_headers.include?(k) }
             end
           end
         end
-      end
+      end if target_environment == "production"
 
       #canada is special
       canada_data = File.read(canada_data_path)
-      CSV.parse(canada_data, :headers=>["Postal Code","Latitude","Longitude","City","Province Shortcode","Province"]).each do |row|
-        addresses[row["Postal Code"].upcase] = row.to_hash
+      CSV.parse(canada_data, :headers=>["Postal Code","Latitude","Longitude","City","Province Shortcode","Province","Country","Country Shortcode"]).each do |row|
+        addresses[row["Postal Code"].upcase] = row.to_hash.select {|k,v| result_headers.include?(k) }
       end
 
     end
@@ -62,5 +67,17 @@ namespace :geonames do
       end
     end
     puts "compressed and written data store to disk in #{compress_time.real} seconds"
+  end
+
+  desc 'statistics'
+  task :stats do
+    db = Locationary.data
+    results = {:country => {}}
+    
+    db.values.each do |location|
+      results[:country][location[:Country]] += 1
+    end
+
+    puts results.inspect
   end
 end
