@@ -9,11 +9,11 @@ namespace :geonames do
   desc 'create database'
   task :create do
     target_environment = "#{ENV['RACK_ENV']}"
-    db_path = "#{Dir.pwd}/db/geonames_#{target_environment}.bin"
-    zipdatafile = "#{Dir.pwd}/tmp/allCountries.zip"
-    rawdata = "#{Dir.pwd}/tmp/allCountries.txt"
+    db_path = "./db/geonames.bin"
+    zipdatafile = "./tmp/allCountries.zip"
+    rawdata = "./tmp/allCountries.txt"
     data_headers = ["Country Code","Postal Code","Place Name","Province","Province Shortcode","City","City Shortcode","Region","Region Shortcode","Latitude","Longitude","Accuracy"]
-    canada_data_path = "#{Dir.pwd}/db/raw/canada.csv"
+    canada_data_path = "./db/raw/canada.csv"
     result_headers = ["Postal Code", "Latitude", "Longitude", "City", "Province", "Country"]
 
     if File.exist?(db_path)
@@ -30,7 +30,7 @@ namespace :geonames do
         end
       end
       puts "downloaded file in #{download_time.real} seconds"
-    end if target_environment == "production"
+    end
 
     addresses = {}
 
@@ -50,7 +50,7 @@ namespace :geonames do
             end
           end
         end
-      end if target_environment == "production"
+      end
 
       #canada is special
       canada_data = File.read(canada_data_path)
@@ -73,7 +73,7 @@ namespace :geonames do
   task :stats do
     db = Locationary.data
     results = {:country => {}}
-    
+
     db.values.each do |location|
       results[:country][location[:Country]] += 1
     end
